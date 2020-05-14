@@ -1,3 +1,31 @@
+// 扩充方法
+Number.prototype.div = function (arg) {
+  var t1 = 0,
+    t2 = 0,
+    r1,
+    r2;
+  try {
+    t1 = this.toString().split('.')[1].length;
+  } catch (e) { }
+  try {
+    t2 = arg.toString().split('.')[1].length;
+  } catch (e) { }
+  r1 = Number(this.toString().replace('.', ''));
+  r2 = Number(arg.toString().replace('.', ''));
+  return r1 / r2 * Math.pow(10, t2 - t1);
+};
+Number.prototype.mul = function (arg) {
+  var m = 0,
+    s1 = this.toString(),
+    s2 = arg.toString();
+  try {
+    m += s1.split('.')[1].length;
+  } catch (e) { }
+  try {
+    m += s2.split('.')[1].length;
+  } catch (e) { }
+  return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
+};
 export default class Util{
   constructor(){}
 
@@ -83,7 +111,7 @@ export default class Util{
   }
 
   /**
-   * 深度复制两个对象
+   * 深度复制 不能扩展对象
    * @param obj
    * @returns {any}
    */
@@ -91,67 +119,101 @@ export default class Util{
     if (obj === null || typeof obj !== 'object') {
       return obj;
     }
-
     return JSON.parse(JSON.stringify(obj));
   }
-  // 深拷贝
+
+  /**
+   * 深拷贝
+   * @param p:Object 目标对象
+   * @param c:Object 可选 传值则扩充；不传值则返回新对象
+   * @return {Object} copy 之后的新对象
+   * */
   static deepCopy(p, c = {}) {
-    for (var i in p) {
-      if (!p.hasOwnProperty(i)) {
-        continue;
+      for (var i in p) {
+        if (!p.hasOwnProperty(i)) {
+          continue;
+        }
+        if (typeof p[i] === 'object') {
+          c[i] = p[i].constructor === Array ? [] : {};
+          this.deepCopy(p[i], c[i]);
+        } else {
+          c[i] = p[i];
+        }
       }
-      if (typeof p[i] === 'object') {
-        c[i] = p[i].constructor === Array ? [] : {};
-        this.deepCopy(p[i], c[i]);
-      } else {
-        c[i] = p[i];
-      }
-    }
-    return c;
+      return c;
   }
 
-
-
-  // 向上取整
+  /**
+   *  向上取整 12.3 -> 13
+   * @param num:Number
+   * @return {Number} 整数
+   * */
   static ceil(num) {
     let n = Math.ceil(num);
     return isNaN(n) ? 0 : n;
   }
 
-  // 向下取整
+  /**
+   * 向下取整  12.3 -> 12
+   * @param num:Number
+   * @return {Number} 整数
+   * */
   static floor(num) {
     let n = Math.floor(num);
     return isNaN(n) ? 0 : n;
   }
-  // 把数四舍五入为最接近的整数。
+
+  /**
+   * 把数四舍五入为最接近的整数。  12.1->12 / 12.8->13
+   * @param num:Number
+   * @return {Number} 整数
+   * */
   static round(num) {
     let n = Math.round(num);
     return isNaN(n) ? 0 : n;
   }
-  // 结果的小数点后有指定位数的数字。
+
+  /**
+   * 结果的小数点后有指定位数的数字。
+   * @param num:Number
+   * @param n:Number 保留位数
+   * @return {Number}
+   * */
   static toFixed(num, n) {
     let m = +((+num).toFixed(n));
     return isNaN(m) ? 0 : m;
   }
+
   /**
-   * 隐藏银行卡信息
+   * 隐藏16位银行卡信息
+   * @param val:String 如：1234567891234567
+   * @return {String} 123456******4567
    * */
   static hideBankCardNo(val){
     return val.substr(0,6)+val.substr(6,val.length-10).replace(/\d/g,'*')+val.substr(-4,4);
   }
-
-  /**
-   * 元转分
-   *
-   *
-   * */
-
-
-  /**
-   * 分转元
-   *
-   * */
-
+    static toYuan(num, n) {
+      n = n > 0 && n <= 10 ? n : 2;
+      let result = parseFloat(num)
+        .div(100)
+        .toFixed(n);
+      if (isNaN(result)) {
+        return 0;
+      }
+      return result;
+    }
+    /**
+     * 元转分
+     * @param num
+     * @returns {any}
+     */
+    static toCent(num) {
+      let result = parseFloat(num).mul(100);
+      if (isNaN(result)) {
+        return 0;
+      }
+      return result;
+    }
 
   /**
    * 大写转金额
@@ -163,13 +225,5 @@ export default class Util{
    *
    * */
 
-
-  /**
-   *
-   *
-   * */
-
-
-
-
 }
+
