@@ -1,42 +1,15 @@
-// 扩充方法
-Number.prototype.div = function (arg) {
-  var t1 = 0,
-    t2 = 0,
-    r1,
-    r2;
-  try {
-    t1 = this.toString().split('.')[1].length;
-  } catch (e) { }
-  try {
-    t2 = arg.toString().split('.')[1].length;
-  } catch (e) { }
-  r1 = Number(this.toString().replace('.', ''));
-  r2 = Number(arg.toString().replace('.', ''));
-  return r1 / r2 * Math.pow(10, t2 - t1);
-};
-Number.prototype.mul = function (arg) {
-  var m = 0,
-    s1 = this.toString(),
-    s2 = arg.toString();
-  try {
-    m += s1.split('.')[1].length;
-  } catch (e) { }
-  try {
-    m += s2.split('.')[1].length;
-  } catch (e) { }
-  return Number(s1.replace('.', '')) * Number(s2.replace('.', '')) / Math.pow(10, m);
-};
-export default class Util{
-  constructor(){}
+
+export default class Util {
+  constructor() { }
 
   /**
    * 检测数据类性
    * @param obj  任意需要判断类性的数据
    * @return {String/Number/Boolean/Object/Array/Function/Date/Null/Undefined/Math/RegExp} 数据类型
    * */
-  static CheckType(obj){
-    let _t =  Object.prototype.toString.call(obj);
-	  return /^\[object (.*)\]$/.exec(_t)[1]
+  static CheckType (obj) {
+    let _t = Object.prototype.toString.call(obj);
+    return /^\[object (.*)\]$/.exec(_t)[1];
   }
 
   /**
@@ -44,9 +17,9 @@ export default class Util{
    * @param obj 任意对象
    * @return {true/false} 是否为空
    * */
-  static CheckAir (obj){
-    if(typeof obj !='object') return;
-    for(let i in obj) {
+  static CheckAir (obj) {
+    if (typeof obj != "object") return;
+    for (let i in obj) {
       return false;
     }
     return true;
@@ -58,21 +31,19 @@ export default class Util{
    * @return {}  包含所有 key 和 value 的一个二维数组;
    *
    * */
-   static GetUrlInfo(url=window.location.search){
-     let obj = new Object();
-     // 判断 url 后面是否有参数
-    if(url.indexOf('?') != -1 ){
+  static GetUrlInfo (url = window.location.search) {
+    let obj = new Object();
+    // 判断 url 后面是否有参数
+    if (url.indexOf("?") != -1) {
       let strs = url.substr(1).split("&"); //从第一个字符开始截取
       for (let i = 0; i < strs.length; i++) {
         //decodeURI：将字符解码
         //decodeURIComponent：解码可解析特殊字符 ":" "/" "%"
-        obj[strs[i].split("=")[0]] = decodeURIComponent(
-          strs[i].split("=")[1]
-        );
+        obj[strs[i].split("=")[0]] = decodeURIComponent(strs[i].split("=")[1]);
       }
     }
     return obj;
-   }
+  }
   /**
    * 功能：金额按千位逗号分割
    * @param s:Number|| String 需要转化的金额;
@@ -80,32 +51,34 @@ export default class Util{
    * @return 金额按千位逗号分割的字符串. 如: 10,000,000.00
    *
    * */
-  static SplitFactory(s, t) {
-    if (/[^0-9.]/.test(s)) return '0';
-    if (s == null || s == '') return '0';
-    s = s.toString().replace(/^(\d*)$/, '$1.');
-    s = (s + '00').replace(/(\d*\.\d\d)\d*/, '$1');
-    s = s.replace('.', ',');
+  static SplitFactory (s, t) {
+    if (/[^0-9.]/.test(s)) return "0";
+    if (s == null || s == "") return "0";
+    s = s.toString().replace(/^(\d*)$/, "$1.");
+    s = (s + "00").replace(/(\d*\.\d\d)\d*/, "$1");
+    s = s.replace(".", ",");
     var re = /(\d)(\d{3},)/;
-    while (re.test(s)) s = s.replace(re, '$1,$2');
-    s = s.replace(/,(\d\d)$/, '.$1');
+    while (re.test(s)) s = s.replace(re, "$1,$2");
+    s = s.replace(/,(\d\d)$/, ".$1");
     if (t == 0) {
       // 不带小数位(默认是有小数位)
-      var a = s.split('.');
-      if (a[1] == '00') {
+      var a = s.split(".");
+      if (a[1] == "00") {
         s = a[0];
       }
     }
     return s;
   }
-/**
+  /**
    * 生成guid
    * @returns {string}
    */
-  static guid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+  static guid () {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
+      c
+    ) {
       var r = (Math.random() * 16) | 0;
-      var v = c === 'x' ? r : (r & 0x3) | 0x8;
+      var v = c === "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
   }
@@ -115,8 +88,8 @@ export default class Util{
    * @param obj
    * @returns {any}
    */
-  static deepClone(obj) {
-    if (obj === null || typeof obj !== 'object') {
+  static deepClone (obj) {
+    if (obj === null || typeof obj !== "object") {
       return obj;
     }
     return JSON.parse(JSON.stringify(obj));
@@ -128,19 +101,19 @@ export default class Util{
    * @param c:Object 可选 传值则扩充；不传值则返回新对象
    * @return {Object} copy 之后的新对象
    * */
-  static deepCopy(p, c = {}) {
-      for (var i in p) {
-        if (!p.hasOwnProperty(i)) {
-          continue;
-        }
-        if (typeof p[i] === 'object') {
-          c[i] = p[i].constructor === Array ? [] : {};
-          this.deepCopy(p[i], c[i]);
-        } else {
-          c[i] = p[i];
-        }
+  static deepCopy (p, c = {}) {
+    for (var i in p) {
+      if (!p.hasOwnProperty(i)) {
+        continue;
       }
-      return c;
+      if (typeof p[i] === "object") {
+        c[i] = p[i].constructor === Array ? [] : {};
+        this.deepCopy(p[i], c[i]);
+      } else {
+        c[i] = p[i];
+      }
+    }
+    return c;
   }
 
   /**
@@ -148,7 +121,7 @@ export default class Util{
    * @param num:Number
    * @return {Number} 整数
    * */
-  static ceil(num) {
+  static ceil (num) {
     let n = Math.ceil(num);
     return isNaN(n) ? 0 : n;
   }
@@ -158,7 +131,7 @@ export default class Util{
    * @param num:Number
    * @return {Number} 整数
    * */
-  static floor(num) {
+  static floor (num) {
     let n = Math.floor(num);
     return isNaN(n) ? 0 : n;
   }
@@ -168,7 +141,7 @@ export default class Util{
    * @param num:Number
    * @return {Number} 整数
    * */
-  static round(num) {
+  static round (num) {
     let n = Math.round(num);
     return isNaN(n) ? 0 : n;
   }
@@ -179,8 +152,8 @@ export default class Util{
    * @param n:Number 保留位数
    * @return {Number}
    * */
-  static toFixed(num, n) {
-    let m = +((+num).toFixed(n));
+  static toFixed (num, n) {
+    let m = +(+num).toFixed(n);
     return isNaN(m) ? 0 : m;
   }
 
@@ -189,32 +162,80 @@ export default class Util{
    * @param val:String 如：1234567891234567
    * @return {String} 123456******4567
    * */
-  static hideBankCardNo(val){
-    return val.substr(0,6)+val.substr(6,val.length-10).replace(/\d/g,'*')+val.substr(-4,4);
+  static hideBankCardNo (val) {
+    return (
+      val.substr(0, 6) +
+      val.substr(6, val.length - 10).replace(/\d/g, "*") +
+      val.substr(-4, 4)
+    );
   }
-    static toYuan(num, n) {
-      n = n > 0 && n <= 10 ? n : 2;
-      let result = parseFloat(num)
-        .div(100)
-        .toFixed(n);
-      if (isNaN(result)) {
-        return 0;
-      }
-      return result;
-    }
-    /**
-     * 元转分
-     * @param num
-     * @returns {any}
-     */
-    static toCent(num) {
-      let result = parseFloat(num).mul(100);
-      if (isNaN(result)) {
-        return 0;
-      }
-      return result;
-    }
 
+  /**
+   * 分转元
+   * @param val 需要转化的金额
+   * @returns {String}
+   */
+  static ToYuan (val) {
+    var num = val;
+    num = val * 0.01 + "";
+    var reg =
+      num.indexOf(".") > -1 ?
+        /(\d{1,3})(?=(?:\d{3})+\.)/g :
+        /(\d{1,3})(?=(?:\d{3})+$)/g;
+    num = num.replace(reg, "$1");
+    num = Number(this.ToDecimal2(num));
+    if(isNaN(num)){
+      return 0
+    }
+    return num;
+  }
+
+  /**
+   * 分转元辅助函数 消除精度问题;
+   * @param x String
+   * @return {string}
+   * */
+  static ToDecimal2 (x) {
+    var f = parseFloat(x);
+    if (isNaN(f)) {
+      throw new Error("请传入正确的数字!");
+    }
+    var f = Math.round(x * 100) / 100 + "";
+    var rs = f.indexOf(".");
+    if (rs < 0) {
+      rs = f.length;
+      f += ".";
+    }
+    while (f.length <= rs + 2) {
+      f += "0";
+    }
+    return f;
+  }
+  /**
+   * 元转分
+   * @param y 金额元
+   * @param n 转换倍数 默认1倍
+   * @returns {Number}
+   */
+  static ToCent (y, n = 1) {
+    var m = 0,
+      s1 = y.toString(),
+      s2 = n.toString();
+    try {
+      m += s1.split(".")[1].length;
+    } catch (e) { }
+    try {
+      m += s2.split(".")[1].length;
+    } catch (e) { }
+    let _result =   (
+      (Number(s1.replace(".", "")) * Number(s2.replace(".", ""))) /
+      Math.pow(10, m)
+    );
+    if(isNaN(_result)){
+      return 0
+    }
+    return _result;
+  }
   /**
    * 大写转金额
    *
@@ -224,6 +245,4 @@ export default class Util{
    * 金额转大写
    *
    * */
-
 }
-
