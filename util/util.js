@@ -172,7 +172,7 @@ export default class Util {
 
   /**
    * 分转元
-   * @param val 需要转化的金额
+   * @param val 需要转化的金额 默认保留两位小数
    * @returns {String}
    */
   static ToYuan (val) {
