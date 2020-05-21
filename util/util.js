@@ -211,6 +211,7 @@ export default class Util {
     }
     return f;
   }
+
   /**
    * 元转分
    * @param y 金额元
@@ -236,10 +237,56 @@ export default class Util {
     }
     return _result;
   }
+
+  /**
+   * 检测当前移动设备 ios/android
+   * @return {ios/android}
+   * */
+  static CheckDevice(){
+    var u = navigator.userAgent;
+    var app = navigator.appVersion;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; // android
+    var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if(isAndroid){
+      return 'android';
+    }
+    if(isIOS){
+      return 'ios';
+    }
+  }
+
   /**
    * 大写转金额
-   *
+   * @param n:Number 数字金额
+   * @return {String} 中文金额
    * */
+  static Arabia_To_Chinese(n) {
+    var unit = "仟佰拾亿仟佰拾万仟佰拾元角分", str = "";
+    n += "00";
+    var a = n.indexOf('-');
+    if(a != -1){
+      n = n.substring(1);
+        var indexpoint = n.indexOf('.');  // 如果是小数，截取小数点前面的位数
+        if (indexpoint >= 0){
+            n = n.substring(0, indexpoint) + n.substr(indexpoint+1, 2);   // 若为小数，截取需要使用的unit单位
+        }
+        unit = unit.substr(unit.length - n.length);  // 若为整数，截取需要使用的unit单位
+        for (var i=0; i < n.length; i++){
+            str += "零壹贰叁肆伍陆柒捌玖".charAt(n.charAt(i)) + unit.charAt(i);  //遍历转化为大写的数字
+        }
+        return "负数"+str.replace(/零(仟|佰|拾|角)/g, "零").replace(/(零)+/g, "零").replace(/零(万|亿|元)/g, "$1").replace(/(亿)万/g, "$1").replace(/^元零?|零分/g, "").replace(/元$/g, "元整").replace(/角$/g, "角整"); // 替换掉数字里面的零字符，得到结果
+    }else{
+        var indexpoint = n.indexOf('.');  // 如果是小数，截取小数点前面的位数
+        if (indexpoint >= 0){
+            n = n.substring(0, indexpoint) + n.substr(indexpoint+1, 2);   // 若为小数，截取需要使用的unit单位
+        }
+        unit = unit.substr(unit.length - n.length);  // 若为整数，截取需要使用的unit单位
+        for (var i=0; i < n.length; i++){
+            str += "零壹贰叁肆伍陆柒捌玖".charAt(n.charAt(i)) + unit.charAt(i);  //遍历转化为大写的数字
+        }
+        return str.replace(/零(仟|佰|拾|角)/g, "零").replace(/(零)+/g, "零").replace(/零(万|亿|元)/g, "$1").replace(/(亿)万/g, "$1").replace(/^元零?|零分/g, "").replace(/元$/g, "元整").replace(/角$/g, "角整"); // 替换掉数字里面的零字符，得到结果
+    }
+  }
 
   /**
    * 金额转大写
