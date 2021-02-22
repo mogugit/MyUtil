@@ -1,0 +1,19 @@
+{
+  "name": "front-utils-mogu",
+  "version": "1.1.5",
+  "description": "<!-- 记录日常开发常用工具类 -->\r # MyUtil\r 记录工作中个人常用工具类",
+  "main": "./util/utils.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mogugit/MyUtil.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mogugit/MyUtil/issues"
+  },
+  "homepage": "https://github.com/mogugit/MyUtil#readme"
+}
