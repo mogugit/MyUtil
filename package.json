@@ -1,6 +1,6 @@
 {
   "name": "front-utils-mogu",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "<!-- 记录日常开发常用工具类 -->\r # MyUtil\r 记录工作中个人常用工具类",
   "main": "./util/utils.js",
   "scripts": {
